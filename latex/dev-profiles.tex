@@ -11,6 +11,7 @@
 \usepackage{xspace}
 \usepackage{paralist}
 \usepackage{color}
+\usepackage[usenames,dvipsnames]{xcolor}
 
 \clubpenalty = 10000
 \widowpenalty = 10000
@@ -27,8 +28,8 @@
 }
 
 \newcommand\georgios[1]{\nb{Georgios}{yellow}{#1}}
-\newcommand\alberto[1]{\nb{Claudia}{cyan}{#1}}
-
+\newcommand\claudia[1]{\nb{Claudia}{cyan}{#1}}
+\newcommand\annotate[1]{\colorbox{Gray}{\color{white}[{#1}]}}
 
 \newcommand{\hassanbox}[1]
 {
@@ -84,7 +85,9 @@ Business-oriented social networks such as LinkedIn\footnote{\url{https://www.lin
 
 We conclude that considering the vast amounts of job advertisements in the IT sector (as well as the large number of developers), finding a job advertisement that is a good match with one's own abilities and desires is currently an inefficient process and likewise, determining how well an applicant from a group of applicants matches the position based on available GitHub user data is cumbersome and time-consuming. At the same time though, GitHub user data provides detailed insights that are not possible to be gained from other social Web sources.
 
-In this paper we propose a pipeline that \emph{automatically} mines GitHub user profiles and job advertisements for relevant information using a tool-chain commonly used in the Linked Open Data Cloud (LODC) community~\cite{bizer2009linked} and subsequently determines to what extent developers match a particular position description. Using the LODC is advantageous as it allows us to partially rely on well-tested algorithms and toolkits. Additionally, it provides a natural mechanism to determine the similarity between a natural language job advertisement and a developer's GitHub profile (source code, click signals, etc.). In this work, we provide a proof-of-concept and describe the challenges that this pipeline entails.
+In this paper we propose a pipeline that \emph{automatically} mines GitHub user profiles and job advertisements for relevant information. We employ an approach that ``translates'' both the developer profile and the advertisement into the Linked Open Data (LOD)~\cite{bizer2009linked} space, where we can exploit the background information available in the LOD cloud to bridge the semantic gap mentioned earlier. Additionally, this setup allows us to (partially) rely on well-tested algorithms and toolkits and it provides a natural mechanism to determine the similarity between a natural language job advertisement and a developer's GitHub profile. 
+
+In the following section we describe our proof-of-concept and provide an overview of the challenges that need to be overcome.
 
 A number of applications can benefit from this pipeline, including:
 \begin{itemize}
@@ -96,7 +99,27 @@ A number of applications can benefit from this pipeline, including:
 
 \section{Approach}
 
-In Figure
+The general overview of our pipeline is shown in Figure~\ref{fig:pipeline} with the three main components being:
+\begin{itemize}
+	\item \textbf{Extraction} of concepts from job advertisements and social coding user data
+	\item \textbf{Weighting} of concepts in such a way that more important concepts receive higher weights
+	\item \textbf{Matching} of the two (job and coding profile-based) concept vectors
+\end{itemize}
+
+On the left-hand side, we take as input a job advertisement in natural language text and extract the entities (or concepts) that appear in it. Named entity recognition (i.e. determining which word or phrase refers to some entity) in combination with named entity disambiguation (i.e. determining to which concrete entity a particular word/phrase refers to) have been shown to be powerful tools to turn natural language text into a more structured representation that machines can reason about. The three most commonly toolkits to annotate text are DBPedia Spotlight\footnote{\url{http://dbpedia-spotlight.github.io/}}, Open Calais\footnote{\url{http://www.opencalais.com/}} and AlchemyAPI\footnote{\url{http://www.alchemyapi.com/}}.
+
+As a concrete example, consider this excerpt from one of the job advertisements in our data set. We annotated this text with DBPedia Spotlight, restricted the annotation to only those concepts of type \emph{computer} or \emph{internet}\footnote{More specifically, we restricted the types to belong to either \texttt{Freebase:/computer} or \texttt{Freebase:/internet}.}. Annotated are those phrases that are recognized as entities - 
+
+\begin{quote}
+The successful candidates will have experience of Object Oriented Programming \annotate{dbr/Object-oriented\_programming}  in at least one of PHP \annotate{dbr/PHP} (or another comparable, dynamic language), Java \annotate{dbr/Java\_(programming\_language)} (ideally with GWT \annotate{dbr/Google\_Web\_Toolkit}) or C++ \annotate{dbr/C++} (ideally with Win32 \annotate{Windows\_API}).
+ 
+They will also be well versed in Test Driven Development and advanced practices of Object Oriented Programming such as Design Patterns and Refactoring.
+\end{quote}
+
+\section{Data}
+
+
+We crawled XXX job advertisement in early 2015 containing the phrase \emph{Software Developer} from the UK version of the job portal Indeed\footnote{\url{http://www.indeed.co.uk}}. In total, $9,848$ job 
 
 
 \subsection{Developer profiles}

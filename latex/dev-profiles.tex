@@ -29,7 +29,9 @@
 
 \newcommand\georgios[1]{\nb{Georgios}{yellow}{#1}}
 \newcommand\claudia[1]{\nb{Claudia}{cyan}{#1}}
-\newcommand\annotate[1]{\colorbox{Gray}{\color{white}[{#1}]}}
+\newcommand\annotate[1]{\hfill \setlength{\fboxsep}{1pt} \colorbox{NavyBlue}{\color{white}[{#1}]}}
+\newcommand\annotateG[1]{\hfill \setlength{\fboxsep}{1pt} \colorbox{BrickRed}{\color{white}[{#1}]}}
+
 
 \newcommand{\hassanbox}[1]
 {
@@ -89,13 +91,6 @@ In this paper we propose a pipeline that \emph{automatically} mines GitHub user 
 
 In the following section we describe our proof-of-concept and provide an overview of the challenges that need to be overcome.
 
-A number of applications can benefit from this pipeline, including:
-\begin{itemize}
-\item ...
-\item ...
-\end{itemize}
-
-
 
 \section{Approach}
 
@@ -106,15 +101,55 @@ The general overview of our pipeline is shown in Figure~\ref{fig:pipeline} with 
 	\item \textbf{Matching} of the two (job and coding profile-based) concept vectors
 \end{itemize}
 
-On the left-hand side, we take as input a job advertisement in natural language text and extract the entities (or concepts) that appear in it. Named entity recognition (i.e. determining which word or phrase refers to some entity) in combination with named entity disambiguation (i.e. determining to which concrete entity a particular word/phrase refers to) have been shown to be powerful tools to turn natural language text into a more structured representation that machines can reason about. The three most commonly toolkits to annotate text are DBPedia Spotlight\footnote{\url{http://dbpedia-spotlight.github.io/}}, Open Calais\footnote{\url{http://www.opencalais.com/}} and AlchemyAPI\footnote{\url{http://www.alchemyapi.com/}}.
+\subsection{Concept extraction}
+On the left-hand side in Figure~\ref{fig:pipeline}, we take as input a job advertisement in natural language text and extract the entities (or concepts) that appear in it. \emph{Named entity recognition} (that is, determining which word or phrase refers to some entity) in combination with \emph{named entity disambiguation} (that is determining to which concrete entity a particular word/phrase refers to) have been shown to be powerful tools to turn natural language text into a structured representation that machines can reason about. 
 
-As a concrete example, consider this excerpt from one of the job advertisements in our data set. We annotated this text with DBPedia Spotlight, restricted the annotation to only those concepts of type \emph{computer} or \emph{internet}\footnote{More specifically, we restricted the types to belong to either \texttt{Freebase:/computer} or \texttt{Freebase:/internet}.}. Annotated are those phrases that are recognized as entities - 
+%not the right place, but latex is pretty unwilling to render where I want this figure to be rendered
+\begin{figure*}[!htb]
+\centering
+\includegraphics[scale=0.4]{images/dbpedia-example-graph.png}
+\caption{An excerpt of DBPedia's graph structure. Each node is a concept, the properties between two concepts are captured in the form of a labelled edge.}
+\label{fig:dbpedia-example}
+\end{figure*}
 
-\begin{quote}
-The successful candidates will have experience of Object Oriented Programming \annotate{dbr/Object-oriented\_programming}  in at least one of PHP \annotate{dbr/PHP} (or another comparable, dynamic language), Java \annotate{dbr/Java\_(programming\_language)} (ideally with GWT \annotate{dbr/Google\_Web\_Toolkit}) or C++ \annotate{dbr/C++} (ideally with Win32 \annotate{Windows\_API}).
- 
-They will also be well versed in Test Driven Development and advanced practices of Object Oriented Programming such as Design Patterns and Refactoring.
-\end{quote}
+
+As a concrete example, consider the following excerpt from one of the job advertisements in our data set and its corresponding automatically derived Named Entity annotations. Shown in bold are all phrases that were recognized as referring to entities (or concepts). The annotations relevant to our scenario are shown in blue, while non-relevant entities are shown in red. 
+\vspace{1cm} %push the annotated text to the next column
+
+{\small
+\noindent The \textbf{successful} \annotateG{dbr/Successful\_(song)}\\ \textbf{candidates} \annotateG{dbr/Candidate} \\
+will have \textbf{experience} \annotateG{dbr/Experience}\\
+of \textbf{OOP} \annotate{dbr/Object-oriented\_programming}\\
+  in at least one of \textbf{PHP} \annotate{dbr/PHP}\\ 
+  (or another comparable,\\
+  dynamic language), \annotate{dbr/Dynamic\_programming\_language}\\ 
+  \textbf{Java} \annotate{dbr/Java\_(programming\_language)}\\
+  (ideally with \textbf{GWT}) \annotate{dbr/Google\_Web\_Toolkit}\\
+  or \textbf{C++} \annotate{dbr/C++}\\
+  (ideally with \textbf{Win32}). \annotate{Windows\_API}\\
+They will also be well versed in\\
+\textbf{Test Driven Development} \annotate{dbr/Test-driven\_development}\\
+and advanced practices of\\ 
+{\footnotesize\textbf{Object Oriented Programming}} \annotate{dbr/Object-oriented\_programming} such as Design Patterns and \textbf{Refactoring}.  \annotate{dbr/Martin\_Fowler} 
+}
+\vspace{0.5cm}\\
+We annotated the above text with DBPedia Spotlight\footnote{\url{http://dbpedia-spotlight.github.io/}}, one of the most commonly used open-source annotation toolkits for natural language text. The phrases (the so-called \emph{surface form} of an entity) are not simply matched against a list of entity names, instead they are disambiguated based on the context a word or phrase appears in --- for instance, ``Java'' is recognized as the programming language entity (instead of the island, the coffee type or another one of the more than 30 different entities that have the surface form ``Java''). Each entity is uniquely identified through its URI as a particular Linked Open Data concept which in the case of DBPedia Spotlight is prefixed by \texttt{http://dbpedia.org/resource/} (for brevity, we replaced this prefix with \texttt{dbr} above). 
+Concepts are linked to each other through different types of properties, thus forming a densely connected graph structure. The large-scale DBpedia ontology is automatically derived from Wikipedia and based on the English Wikipedia edition, currently contains more than 4.5 million elements (``things'') and nearly 600 million links between them. Figure~\ref{fig:dbpedia-example} contains a small excerpt of this graph -- even though C++ and the Java programming language are not directly linked, we can determine some degree of relatedness by a walk across the graph (similarly, we can observe a lower relatedness degree between C++ and the GWT, as the distance between the two concepts is larger). Such graph walks allow us to determine the relatedness between virtually any two concepts.
+Since in our particular use case we are mostly interested in concepts related to information technology, we restrict the annotations to concepts that have the type \emph{computer} or \emph{internet}. Wikipedia (and thus DBPedia) contains entries covering most if not all programming languages, many important programming frameworks and libraries as well as many computer science concepts. We thus consider it a suitable ontology to use for our specific use case.
+
+While the annotation of the job advertisements is straight-forward, annotating a developer's GitHub data with concepts from the same ontology (to allow a simple matching strategy) is more challenging. While programming language identification can largely be considered a solved problem, more fine-grained information such as the libraries used by a particular project often require language-specific solutions (e.g. Maven projects requires the parsing of pom files, .....). Furthermore, identifying how well a developer has internalized particular concepts (e.g. WebSocket programming, the TCP protocol, Bloom filters) requires a deep parsing and semantic tagging of the developer's source code contributions.
+We conducted a preliminary study (described later) that suggests that a project's README can be utilized as a reasonable approximation of a project's content. Since such READMEs are usually in natural language form, we are able to use exactly the same process as for the job advertisements, only instead of extracting the concepts of a single piece of text, we process all README files contained in all projects the developer is \emph{associated} with. Here, association can either mean a project the developer created, forked or watches.
+
+We turn to the vector space model as algebraic formulation of the concepts found in the job advertisement as well as the GitHub developer data: $\textit{job}_i=(w_{1,i}, w_{2,i}, ..., w_{n,i})$ and $\textit{dev}_j=(w_{1,j}, w_{2,j}, ..., w_{n,j})$. Each dimension corresponds to one DBPedia concept and if a concept $c_s$ is found in the job advertisement (or developer profile), the corresponding weight $w_{s}$ is set to a value above zero. Since these vectors are extremely sparse, we also investigate the use of random walks on the DBPedia graph to ``switch on'' related concepts that are not explicitly mentioned in the advertisement or developer profile. How to exactly set the weights is the task of the concept weighting component discussed next.
+
+\subsection{Concept weighting}
+
+Not all concepts extracted from an advertisement or developer profile are equally important. We use the well-known TF.IDF weighting scheme to determine non-binary concept weights (benefitting concepts which occur rarely across the entire corpus of documents, but often within particular documents); these weights are computed separately for the corpus of job advertisements and the corpus of developer profiles. Additionally, we enrich the concept vectors by adding for each found concepts up to $t$ semantically related concepts based on a particular relatedness measure.
+
+\subsection{Concept matching}
+
+The vector space provides a natural mechanism to determine the similarity between the devised job and developer profile vectors, namely the cosine of the angle between the two vectors (the so-called cosine similarity), which is bounded to a value in $[0,1]$ where a larger score indicates higher similarity. 
+We can now for each job advertisement rank all developer profiles as well as the other way round.
 
 \section{Data}
 

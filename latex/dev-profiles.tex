@@ -11,6 +11,7 @@
 \usepackage{xspace}
 \usepackage{paralist}
 \usepackage{color}
+\usepackage{booktabs}
 \usepackage[usenames,dvipsnames]{xcolor}
 \usepackage{amssymb}
 
@@ -181,20 +182,20 @@ The three main components are:
 
 \end{itemize}
 
-\subsection{Concept extraction}
+\subsection{Concept Extraction Overview}
 
 %On the left-hand side in Figure~\ref{fig:pipeline}, we take as input a job
 %advertisement in natural language text and extract the entities (or concepts)
 %that appear in it.
 
+\subsubsection{The DBPedia Ontology}
 Our approach is based on two techniques from natural language processing namely,
-\emph{named entity recognition} in combination with \emph{named entity
-disambiguation}. Given an unstructured text (e.g. a job advertisement) named
-entity recognition determines which words or phrases in the text refer to an
-entity(-ies) in a given predefined set of entities. Named entity disambiguation
-determines which concrete entities a particular word or phrase refers to.  The
-combination of both techniques have been repeatably shown~\claudia{Ref?} to be
-powerful tools to turn natural language text into a structured representation
+\emph{named entity recognition} (NER) in combination with \emph{named entity
+disambiguation} (NED). Given an unstructured text (e.g. a job advertisement) NER determines which words or phrases in the text refer to an
+entity, which can be any real-world entity. NED
+determines which concrete entity a particular word or phrase refers to.  The
+combination of both techniques have been shown~\cite{aggarwal2012mining} to be a
+powerful mechanism to turn natural language text into a structured representation
 that machines can reason about.
 
 %not the right place, but latex is pretty unwilling to render where I want this figure to be rendered
@@ -205,18 +206,19 @@ that machines can reason about.
 \label{fig:dbpedia-example}
 \end{figure*}
 
-We use DBPedia Spotlight,\footnote{\url{http://dbpedia-spotlight.github.io/}}
+We rely on DBPedia Spotlight,\footnote{\url{http://dbpedia-spotlight.github.io/}}
 one of the most commonly used open-source annotation toolkits for natural
-language text, as a concrete implementation for concept extraction. The
-large-scale DBpedia ontology\claudia{ref?} behind the DBPedia Spotlight service is
-automatically derived from Wikipedia and based on the English Wikipedia edition,
-currently contains more than 4.5 million elements (``things'') and nearly 600
-million links between them. Wikipedia (and thus DBPedia) contains entries
-covering most if not all programming languages, many important programming
+language text, as a concrete implementation of concept extraction. The
+large-scale DBpedia ontology~\cite{mendes2011dbpedia} behind the DBPedia Spotlight service is
+automatically derived from Wikipedia and (based on the English Wikipedia edition),
+currently contains more than 4.5 million entities (``things'') and nearly 600
+million links between them. Wikipedia (and thus DBPedia) contain entries
+covering most if not all programming languages, important programming
 frameworks and libraries, as well as many computer science concepts. We thus
 consider it a suitable ontology to use for our specific use case.
 
-As a concrete example, consider the following excerpt from one of the job
+\subsubsection{A Concrete Example}
+Consider the following excerpt from one of the job
 advertisements in our data set and its corresponding automatically derived Named
 Entity annotations. Shown in bold are all phrases that were recognized as
 referring to entities (or concepts). The annotations relevant to our scenario
@@ -245,10 +247,10 @@ such as Design Patterns and \textbf{Refactoring}. \annotateG{Martin\_Fowler}}\\
 The
 phrases (the so-called \emph{surface form} of an entity) are not simply matched
 against a list of entity names, instead they are disambiguated based on the
-context a word or phrase appears in. For instance, ``Java'' is recognized as
-the programming language entity (instead of the island, the coffee type or
+context a word or phrase appears in. For instance, \emph{Java}is recognized as
+the programming language concept (instead of the island, the coffee type or
 another one of the more than 30 different entities that have the surface form
-``Java''). Each entity is uniquely identified as a particular LOD concept.
+\emph{Java}). Each entity is uniquely identified as a particular LOD concept.
 %which in the case of DBPedia Spotlight is prefixed by
 %\texttt{http://dbpedia.org/resource/} (for brevity, we replaced this prefix with
 %\texttt{dbr} above).
@@ -256,18 +258,16 @@ Concepts are linked to each other through different types
 of properties, thus forming a densely connected graph structure.
 Figure~\ref{fig:dbpedia-example} contains a small excerpt of this graph; even
 though C++ and the Java programming language are not directly linked, we can
-determine some degree of relatedness by a walk across the graph (similarly, we
+determine some degree of relatedness by a walk across the graph or by considering the textual similarity between each entity's description~\cite{gabrilovich2007computing} (similarly, we
 can observe a lower relatedness degree between C++ and the GWT, as the distance
-between the two concepts is larger). Such graph walks allow us to determine the
-relatedness between any two concepts. Since in our particular use
+between the two concepts is larger). Since in our particular use
 case we are mostly interested in concepts related to information technology, we
 restrict the annotations to concepts that have the type \emph{computer} or
 \emph{internet}.
 
 \subsection{Developer Profile Extraction}
 
-While the annotation of the job advertisements is straight-forward, annotating a
-developer's GitHub data with concepts from the same ontology (to allow a simple
+While the annotation of the job advertisements is straight-forward (as just shown in the example), annotating a developer's GitHub data with concepts from the same ontology (to allow a simple
 matching strategy) is more challenging. While programming language
 identification can largely be considered a solved problem, more fine-grained
 information such as the libraries used by a particular project often require
@@ -276,43 +276,36 @@ language-specific solutions (e.g. Maven projects requires the parsing of
 developer has with particular concepts (e.g. WebSocket programming, the TCP
 protocol, Bloom filters) requires deep parsing and semantic tagging of the
 developer's source code contributions; parsing at scale requires vast computing
-resources while concept extraction from source code is neither precise nor ~\cite{Kuhn07}.
+resources while concept extraction from source code is neither precise nor \georgios{missing word}~\cite{Kuhn07}.
 
 We advocate that README (and in general, documentation) files in repositories in
 the developer's profile are a good proxy for the developer's familiarity with
 certain programming concepts, languages and toolkits. A typical README file
 contains information about what the software can do, description of technologies
 used in it, steps on how to recreate development environments and in general a
-wealth of information that the developers should be familiar with they own a
+wealth of information that the developers should be familiar with if they own a
 repository. Since such READMEs are in natural language form, we can use exactly
 the same process as for the job advertisements, only instead of extracting the
 concepts of a single piece of text, we process all README files contained in all
-projects the developer is \emph{associated} with.  Here, association can either
-mean a repository the developer created or forked.
+projects the developer is associated with. 
+ %Here, association can either mean a repository the developer created or forked.
 
 \subsection{Concept weighting}
 
-The extracted concepts from job descriptions and GitHub profiles are converted
+The extracted concepts from job descriptions and GitHub developer profiles are converted
 to vectors: $\textit{job}_i=(w_{1,i}, w_{2,i}, ..., w_{n,i})$ and $\textit{dev}_j=(w_{1,j},
 w_{2,j}, ..., w_{n,j})$. Each dimension corresponds to one DBPedia concept and
 if a concept $c_s$ is found in the job advertisement (or developer profile), the
 corresponding weight $w_{s}$ is set to a value above zero. Since these vectors
-are extremely sparse, we also investigate the use of random walks on the DBPedia
-graph to ``switch on'' related concepts that are not explicitly mentioned in the
+are extremely sparse, we also investigate the use of semantic relatedness measures on the DBPedia data to ``switch on'' related concepts that are not explicitly mentioned in the
 advertisement or developer profile.
 %How to exactly set the weights is the task
 %of the concept weighting component discussed next.
 
 Not all concepts extracted from an advertisement or developer profile are
-equally important. We use the well-known TF.IDF \claudia{ref? Also, one sentence
-on how TF.IDF works for weighting} weighting scheme
-to determine non-binary concept weights (benefiting concepts which occur rarely
-across the entire corpus of documents, but often within particular documents);
-these weights are computed separately for the corpus of job advertisements and
-the corpus of developer profiles. Additionally, we enrich the concept vectors by
-adding for each found concepts up to $t$ semantically related concepts based on
-a particular relatedness measure \claudia{is this through the ``random walks''?
-I do not understand, please explain a bit more}.
+equally important. We use a basic concept weighting scheme commonly employed in information retrieval: TF.IDF~\cite{baeza1999modern} which gives a low weight to concepts that appear in many documents (as those are not very informative) while at the same time benefiting concepts which occur rarely across the entire corpus of documents, but often within particular documents. These weights are computed separately for the corpus of job advertisements and the corpus of developer profiles. 
+
+%Additionally, we enrich the concept vectors by adding for each found concepts up to $t$ semantically related concepts based on a particular relatedness measure \claudia{is this through the ``random walks''? I do not understand, please explain a bit more}.
 
 \subsection{Concept matching}
 
@@ -323,21 +316,51 @@ bounded to a value in $[0,1]$ where a larger score indicates higher similarity.
 We can now for each job advertisement rank all developer profiles as well as the
 other way round.
 
-\section{Data}
+\section{Experiments}
 
+\subsection{Job advertisements} 
+We crawled job advertisements posted in early 2015 from the UK job portal  Indeed\footnote{\url{http://www.indeed.co.uk}}. Each search on Indeed returns up to $1,000$ search results (i.e. advertisements); we conducted five searches using the following search phrases: $\{\textit{software developer}, \textit{software architect}, \textit{software engineer},$ $\emph{computer science}, \emph{web developer}\}$ and thus retrieved $5,000$ advertisements in total. Of those, $1,1121$ advertisements were posted directly on the Indeed platform (instead of referring to an externally placed advertisment); we annotated them with DBPedica concepts as discussed before. The main results are shown in Table~\ref{tab:jobadverts}. Important for our work is the fact that on average ten IT concepts are mentioned, though it should be noted that these also include general concepts such as \emph{Application\_software} as shown in Table~\ref{tab:top10} where the ten most popular IT concepts across all job advertisements are listed.
 
-We crawled XXX job advertisement in early 2015 containing the phrase \emph{Software Developer} from the UK version of the job portal Indeed\footnote{\url{http://www.indeed.co.uk}}. In total, $9,848$ job 
+\begin{table}
+\centering
+\begin{tabular}{lr}
+\toprule
+Number of job adverts			& $1,121$\\
+Average number of words / advert 		& $287.4$\\
+Average number of  entities / advert	& $59.6$\\
+Average number of IT entities / advert& $9.9$\\
+\bottomrule
+\end{tabular}
+\caption{Overview of our job advertisement data set.}
+\label{tab:jobadverts}
+\end{table}
 
+\begin{table}
+\centering
+\begin{tabular}{ll}
+\toprule
+\textbf{Job advertisements}	& \textbf{Developer profiles}\\
+\midrule
+dbr/Computer\_software (43.3\%) 			& \\
+dbr/Application\_software (40.4\%)			& \\
+dbr/Cascading\_Style\_Sheets (38.9\%)	& \\
+dbr/Business (37.6\%)								& \\
+dbr/JavaScript (36.5\%)							& \\
+dbr/HTML (24.8\%)									& \\
+dbr/Debian (20.5\%)								& \\
+dbr/PHP (20.0\%)										& \\
+dbr/Computing\_platform (1§9.8\%)		& \\
+dbr/HTML5 (17.4\%)								& \\
+\bottomrule
+\end{tabular}
+\caption{Overview of the ten most often occurring IT concepts in our job advertisement and developer profile data sets. Shown in brackets is the percentage of documents (job advertisements / developer profiles) that contain the concept at least once.}
+\label{tab:top10}
+\end{table}
 
 \subsection{Developer profiles}
 
-Mining developer profiles from GitHub's publicly available data sources incurs
-the challenge of how to derive features from this raw data that are useful in
-the context of matching job advertisements to developers. Prior work has
-considered a number of high-level concepts that recruiters consider when looking
-for developers, such as ....
+To 
 
-\subsection{Job profiles}
 
 \subsection{Matching developer and job profiles}
 

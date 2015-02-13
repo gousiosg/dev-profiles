@@ -12,6 +12,7 @@
 \usepackage{paralist}
 \usepackage{color}
 \usepackage[usenames,dvipsnames]{xcolor}
+\usepackage{amssymb}
 
 \clubpenalty = 10000
 \widowpenalty = 10000
@@ -86,17 +87,12 @@ from their activities on GitHub.
 \label{fig:pipeline}
 \end{figure*}
 
-Today, social coding platforms have become an important tool for developers to
-showcase their work and become visible in the developer community.
-GitHub\footnote{\url{https://github.com/}} in particular has become an
-established way for developers to create a portfolio of their work to be
-considered during the hiring process by potential
-employers~\cite{dabbish2012social}. In order to find potential employers,
+In order to find potential employers,
 developers search for job openings in various online job portals and compare
 their desires, experiences and activities with the described position. This is a
 cumbersome process as many job advertisements are lengthy, mentioning a plethora
 of programming languages, libraries and techniques that the perfect candidate
-should be familiar with.  Moreover, each of these items is usually conditioned
+should be familiar with. Moreover, each of these items is usually conditioned
 on the number of years of experience or the level of expertise and may fall into
 the ``required'' or ``preferred'' skill category. Over the years, job
 advertisements have asked for a larger number of skills from prospective
@@ -110,27 +106,9 @@ profile (managers, developers, HR personnel, etc.). Here a ``semantic gap'' may
 exist between search terms a developer is using to find suitable advertisements
 in job portals and the terms that actually appear in an advertisement.
 
-Similarly, judging the qualification of an applicant based on his or her GitHub
-profile is equally challenging~\cite{Singer:2013:MAS:2441776.2441791}. GitHub
-provides several user-based summary statistics such as \emph{Contributions in
-the last year}, \emph{Number of forked projects}, \emph{Number of followers},
-however, the usefulness of this information is very limited, as it does not
-offer immediate insights into the developer's programming abilities, the
-particular languages the developer is regularly using or the type of development
-toolchain the developer is using.  Marlow et
-al.~\cite{Marlow:2013:ATS:2441776.2441794} investigated how more detailed
-publicly accessible signals about a developer's activites on GitHub are used by
-employers in the recruitment process. In an interview-based study with several
-IT employers (active in the open-source community) they identified four main
-insights that employers can \emph{reliably} gain from a study of developer
-GitHub profiles: (1) Shared open source values, (2) Community acceptance of work
-\& contribution quality, (3) Project management skills, and (4) Passion for
-coding. Though again, the limiting factor in this setup is the time required to
-manually inspect each developer's profile.
-
-Business-oriented social networks such as
-LinkedIn\footnote{\url{https://www.linkedin.com/}} are using recommender engines
-to \emph{push} job advertisements to its users (in addition to the traditional
+Business-oriented social networks, such as
+LinkedIn\footnote{\url{https://www.linkedin.com/}}, are using recommender engines
+to \emph{push} job advertisements to their users (in addition to the traditional
 \emph{pull}-based model where users are actively searching among the available
 advertisements). Recommender algorithms determine the \emph{similarity} between
 pairs of user and advertisement profiles and recommend the job to the user if
@@ -140,28 +118,50 @@ lack of detailed user profile data as statements such as ``Experienced Java
 developer'' or ``Embedded Software Engineer'' contain relatively little
 information.
 
-We conclude that considering the vast amounts of job advertisements in the IT
-sector (as well as the large number of developers), finding a job advertisement
-that is a good match with one's own abilities and desires is currently an
-inefficient process and likewise, determining how well an applicant from a group
-of applicants matches the position based on available GitHub user data is
-cumbersome and time-consuming. At the same time though, GitHub user data
-provides detailed insights that are not possible to be gained from other social
-Web sources.
+In the recent years, social coding platforms have become an important tool for
+developers to become visible in the developer community~\cite{Capil13}.
+Developers use sites such as GitHub and BitBucket to showcase their work in the
+hoe that this will help them in the hiring process by potential
+employers~\cite{dabbish2012social}. However, judging the qualification of an
+applicant based on his or her GitHub profile is equally
+challenging~\cite{Singer:2013:MAS:2441776.2441791}. GitHub provides several
+user-based summary statistics such as \emph{Contributions in the last year},
+\emph{Number of forked projects}, \emph{Number of followers}, however, the
+usefulness of this information is very limited, as neither does it offer
+immediate insights into the developer's programming abilities nor does it
+highlight the particular languages or tool chains the developer knows.
 
-In this paper we propose a pipeline that \emph{automatically} mines GitHub user
+\georgios{move to rel work?} Marlow et al.~\cite{Marlow:2013:ATS:2441776.2441794}
+investigated how more detailed, publicly accessible signals about a developer's
+activities on GitHub are used by employers in the recruitment process. In an
+interview-based study with several IT employers (active in the open-source
+community) they identified four main insights that employers can \emph{reliably}
+gain from a study of developer GitHub profiles: (1) Shared open source values,
+(2) Community acceptance of work \& contribution quality, (3) Project management
+skills, and (4) Passion for coding. Though again, the limiting factor in this
+setup is the time required to manually inspect each developer's profile.
+
+%We conclude that considering the vast amounts of job advertisements in the IT
+%sector (as well as the large number of developers), finding a job advertisement
+%that is a good match with one's own abilities and desires is currently an
+%inefficient process and likewise, determining how well an applicant from a group
+%of applicants matches the position based on available GitHub user data is
+%cumbersome and time-consuming. At the same time though, GitHub user data
+%provides detailed insights that are not possible to be gained from other social
+%Web sources.
+%
+In this paper, we propose a pipeline that \emph{automatically} mines GitHub user
 profiles and job advertisements for relevant information. We employ an approach
 that ``translates'' both the developer profile and the advertisement into the
 Linked Open Data (LOD)~\cite{bizer2009linked} space, where we can exploit the
 background information available in the LOD cloud to bridge the semantic gap
 mentioned earlier. Additionally, this setup allows us to (partially) rely on
-well-tested algorithms and toolkits and it provides a natural mechanism to
+well-tested algorithms and toolkits, while it provides a natural mechanism to
 determine the similarity between a natural language job advertisement and a
 developer's GitHub profile.
 
-In the following section we describe our proof-of-concept and provide an
-overview of the challenges that need to be overcome.
-
+%In the following section we describe our proof-of-concept and provide an
+%overview of the challenges that need to be overcome.
 
 \section{Approach}
 

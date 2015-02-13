@@ -1,9 +1,12 @@
 ## Folders specific to Claudia's part of the project
 scripts
 
-#vi backups
+#Giorgos's ignores
 *.swp
 build
+.idea
+.DS_Store
+*~
 
 ## Core latex/pdflatex auxiliary files:
 *.aux

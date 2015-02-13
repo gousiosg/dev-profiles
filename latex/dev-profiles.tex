@@ -310,8 +310,8 @@ other way round.
 
 \section{Experiments}
 
-\subsection{Job advertisements} 
-We crawled job advertisements posted in early 2015 from the UK job portal  Indeed\footnote{\url{http://www.indeed.co.uk}}. Each search on Indeed returns up to $1,000$ search results (i.e. advertisements); we conducted five searches using the following search phrases: $\{\textit{software developer}, \textit{software architect}, \textit{software engineer},$ $\emph{computer science}, \emph{web developer}\}$ and thus retrieved $5,000$ advertisements in total. Of those more than $1,000$ advertisements were posted directly on the Indeed platform (instead of referring to an externally placed advertisment); we annotated them with DBPedica concepts as discussed before. The main results are shown in Table~\ref{tab:jobadverts}. Important for our work is the fact that on average ten IT concepts are mentioned, though it should be noted that these also include general concepts such as \emph{Application\_software} as shown in Table~\ref{tab:top10} where the ten most popular IT concepts across all job advertisements are listed.
+\paragraph{Job advertisements} 
+We crawled job advertisements posted in early 2015 from the UK job portal  Indeed\footnote{\url{http://www.indeed.co.uk}}. Each search on Indeed returns up to $1,000$ search results (i.e. advertisements); we conducted five searches using the following search phrases: $\{\textit{software developer}, \textit{software architect}, \textit{software engineer},$ $\emph{computer science}, \emph{web developer}\}$ and thus retrieved $5,000$ advertisements in total. Of those more than $1,000$ advertisements were posted directly on the Indeed platform (instead of referring to an externally placed advertisment). We annotated them with DBPedica concepts as discussed before; the main results are shown in Table~\ref{tab:jobadverts}. Important for our work is the fact that on average ten IT concepts are mentioned in each advert. The ten most occurring concepts in this data set are shown in Table~\ref{tab:top10} (left column). 
 
 \begin{table}
 \centering
@@ -325,7 +325,8 @@ Average number of  distinct entities / advert	& $59.0$\\
 \midrule
 Average number of IT entities / advert	& $14.4$\\
 Average number of distinct IT entities / advert& $9.7$\\
-
+\midrule
+Total number of distinct IT entities found	& 486\\
 \bottomrule
 \end{tabular}
 \caption{Overview of our job advertisement data set.}
@@ -339,32 +340,31 @@ Average number of distinct IT entities / advert& $9.7$\\
 \toprule
 \textbf{Job advertisements}	& \textbf{Developer profiles}\\
 \midrule
-dbr/Computer\_software (41.8\%) 			& Hypertext\_Transfer\_Protocol (41.7\%) \\
-dbr/Application\_software (39.6\%)			& JavaScript (23.05\%) \\
-dbr/Cascading\_Style\_Sheets (37.8\%)	& HTML (21.4\%) \\
-dbr/Business (36.4\%)								& Portable\_Network\_Graphics (19.0\%)\\
-dbr/JavaScript (34.5\%)							& Cascading\_Style\_Sheets (13.2\%)\\
-dbr/HTML (23.0\%)									& Application\_software (12.8\%) \\
-dbr/Debian (19.2\%)								& MIT\_License (11.8\%) \\
-dbr/PHP (18.9\%)										& Scripting\_language (10.2\%) \\
-dbr/Computing\_platform (18.4\%)		& Git\_(software) (10.2\%) \\
-dbr/.NET\_Framework (18.0\%)				& Web\_browser (10.0\%)\\
+Computer\_software (41.8\%) 			& Hypertext\_Transfer\_Protocol (78.0\%) \\
+Application\_software (39.6\%)		& Scripting\_language (67.0\%) \\
+Cascading\_Style\_Sheets (37.8\%)	& HTML (67.0\%) \\
+Business (36.4\%)								& COM\_file (61.1\%)\\
+JavaScript (34.5\%)							& Debian (60.5\%)\\
+HTML (23.0\%)									& JavaScript (56.4\%) \\
+Debian (19.2\%)								& Library\_computing (44.8\%) \\
+PHP (18.9\%)									& Git\_(software) (29.2\%) \\
+Computing\_platform (18.4\%)		& GNU\_Project (29.2\%) \\
+.NET\_Framework (18.0\%)				& Wiki (27.5\%)\\
 \bottomrule
 \end{tabular}
 \caption{Overview of the ten most often occurring IT concepts in our job advertisement and developer profile data sets. Shown in brackets is the percentage of documents (job advertisements / developer profiles) that contain the concept at least once.}
 \label{tab:top10}
 \end{table}
 
-\subsection{Developer profiles}
+\paragraph{Developer profiles}
 
-We extracted the $1,000$ top committers from the GHTorrent~\cite{Gousi13} dataset. 863 of those users forked or created at least one project that contains a non-empty \texttt{REAdME.md} file, the remainder are either bots (63 users) or created/forked projects with only empty README.md files (70 users). Thus, overall for less than $10\%$ of human GitHub it is not possible to use README's as source of developer profile data. Each \texttt{README.md} is associated with one project. The main statistics of our developer data set are shown in Table~\ref{tab:developers}. 
-
+We extracted the $1,000$ top committers from the GHTorrent~\cite{Gousi13} dataset. 863 of those users forked or created at least one project that contains a non-empty \texttt{REAdME.md} file, the remainder are either bots (63 users) or created/forked projects with only empty README.md files (70 users). Thus, overall for less than $10\%$ of human GitHub it is not possible to use README's as source of developer profile data. Each \texttt{README.md} is associated with one project. The main statistics of our developer data set are shown in Table~\ref{tab:developers}. Importantly on average for each developer we are able to extract $500$ IT entities across all the developer's README files. The $57$ distinct IT entities found on average per developer indicate the high level of detailed information we are able to extract. The right column of Table~\ref{tab:top10} shows the most often occurring IT entities across developers. In support of our envisioned application, we find substantial overlap between the entities extracted from job advertisements and the entities extracted from developer profiles.
 
 \begin{table}[htb]
 \centering
 \begin{tabular}{lr}
 \toprule
-Number of developers									& $663$\\
+Number of developers									& $863$\\
 \midrule
 Average number of project README files / developer	& $32.3$\\
 Average number \emph{forked} project README files / developer	& $16.5$\\
@@ -380,9 +380,9 @@ Average number of IT entities / README file				& $18.0$\\
 Average number of distinct IT entities / README file				& $6.0$\\
 \midrule
 Average number of entities /developer						& $1447.3$\\
-Average number of distinct entities / developer					& $218.2$\\
+Average number of distinct entities / developer			& $218.2$\\
 Average number of IT entities / developer			& $500.1$\\
-Average number of distinct IT entities / developer				& $57.4$\\
+Average number of distinct IT entities / developer		& $57.4$\\
 \bottomrule
 \end{tabular}
 \caption{Overview of our developer profile data set.}
@@ -390,10 +390,10 @@ Average number of distinct IT entities / developer				& $57.4$\\
 \end{table}
 
 
-\subsection{Matching developer and job profiles}
 
+\paragraph{Matching developer and job profiles}
+Finally, we consider the 
 
-\section{Preliminary Work}
 
 \section{Related Work}
 

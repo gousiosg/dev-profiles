@@ -309,17 +309,16 @@ equally important. We use a basic concept weighting scheme commonly employed in 
 
 \subsection{Concept matching}
 
-The vector space provides a natural mechanism to determine the similarity
+The vector space model~\cite{baeza1999modern} provides a natural mechanism to determine the similarity
 between the devised job and developer profile vectors, namely the cosine of the
 angle between the two vectors (the so-called cosine similarity), which is
 bounded to a value in $[0,1]$ where a larger score indicates higher similarity.
-We can now for each job advertisement rank all developer profiles as well as the
-other way round.
+We can now for each job advertisement rank all developer profiles according to the similarity as well the other way round.
 
 \section{Experiments}
 
 \paragraph{Job advertisements} 
-We crawled job advertisements posted in early 2015 from the UK job portal  Indeed\footnote{\url{http://www.indeed.co.uk}}. Each search on Indeed returns up to $1,000$ search results (i.e. advertisements); we conducted five searches using the following search phrases: $\{\textit{software developer}, \textit{software architect}, \textit{software engineer},$ $\emph{computer science}, \emph{web developer}\}$ and thus retrieved $5,000$ advertisements in total. Of those more than $1,000$ advertisements were posted directly on the Indeed platform (instead of referring to an externally placed advertisment). We annotated them with DBPedica concepts as discussed before; the main results are shown in Table~\ref{tab:jobadverts}. Important for our work is the fact that on average ten IT concepts are mentioned in each advert. The ten most occurring concepts in this data set are shown in Table~\ref{tab:top10} (left column). 
+We crawled job advertisements posted in early 2015 from the UK job portal  Indeed\footnote{\url{http://www.indeed.co.uk}}. Each search on Indeed returns up to $1,000$ search results (i.e. advertisements); we conducted five searches using the following search phrases: $\{\textit{software developer}, \textit{software architect}, \textit{software engineer},$ $\emph{computer science}, \emph{web developer}\}$ and thus retrieved $5,000$ advertisements in total. Of those more than $1,300$ advertisements were posted directly on the Indeed platform (instead of referring to an externally placed advertisment). We annotated them with DBPedica concepts as discussed before; the main results are shown in Table~\ref{tab:jobadverts}. Important for our work is the fact that on average ten IT concepts are mentioned in each advert. The ten most occurring concepts in this data set are shown in Table~\ref{tab:top10} (left column). 
 
 \begin{table}
 \centering
@@ -366,8 +365,13 @@ Computing\_platform (18.4\%)		& GNU\_Project (29.2\%) \\
 
 \paragraph{Developer profiles}
 
-We extracted the $1,000$ most active GitHub developers from the GHTorrent\footnote{\url{https://ghtorrent.org/}} dataset. 863 of those users forked or created at least one project that contains a non-empty \texttt{REAdME.md} file, the remainder are either bots (63 users) or created/forked projects with only empty README.md files (70 users). Thus, overall for less than $10\%$ of human GitHub it is not possible to use README's as source of developer profile data. Each \texttt{README.md} is associated with one project. The main statistics of our developer data set are shown in Table~\ref{tab:developers}. Importantly on average for each developer we are able to extract $500$ IT entities across all the developer's README files. The $57$ distinct IT entities found on average per developer indicate the high level of detailed information we are able to extract. The right column of Table~\ref{tab:top10} shows the most often occurring IT entities across developers. In support of our envisioned application, we find substantial overlap between the entities extracted from job advertisements and the entities extracted from developer profiles.
+We extracted the $1,000$ most active GitHub developers from the GHTorrent\footnote{\url{https://ghtorrent.org/}} dataset. 863 of those users forked or created at least one project that contains a non-empty \texttt{REAdME.md} file, the remainder are either bots (63 users) or created/forked projects with only empty README.md files (70 users). Thus, overall for less than $10\%$ of human GitHub it is not possible to use README's as source of developer profile data. Each \texttt{README.md} is associated with one project. The main statistics of our developer data set are shown in Table~\ref{tab:developers}. Importantly on average for each developer we are able to extract $500$ IT entities across all the developer's README files. The $57$ distinct IT entities found on average per developer indicate the high level of detailed information we are able to extract. The right column of Table~\ref{tab:top10} shows the most often occurring IT entities across developers. In support of our envisioned application, we find substantial overlap between the entities extracted from job advertisements and the entities extracted from developer profiles as evident in Figure~\ref{fig:scatterEntities}; while some concepts appear either only among the developer profiles or among the job adverts, the majority of concepts appear at least once in both corpora. The linear correlation between the number of times a concept appears in developer profiles vs. job adverts is $r=0.49$ (fitted line in Figure~\ref{fig:scatterEntities}).
 
+\begin{figure}
+\includegraphics[scale=0.3]{../figs/entities-jobs-vs-devs.png}
+\caption{Each marker represents one IT entities (851 in total) which represent the union of all concepts found in the job adverts and developer profile data sets. The scatter plot shows in how many developer profiles the entity appeared (at least once) vs. in how many job advertisements.}
+\label{fig:scatterEntities}
+\end{figure}
 
 \begin{table}[htb]
 \centering
@@ -389,9 +393,11 @@ Average number of IT entities / README file				& $18.0$\\
 Average number of distinct IT entities / README file				& $6.0$\\
 \midrule
 Average number of entities /developer						& $1447.3$\\
-Average number of distinct entities / developer			& $218.2$\\
+Average number of distinct entities / developer			& $291.3$\\
 Average number of IT entities / developer			& $500.1$\\
-Average number of distinct IT entities / developer		& $57.4$\\
+Average number of distinct IT entities / developer		& $78.1$\\
+\midrule
+Total number of distinct IT entities found	& $764$\\
 \bottomrule
 \end{tabular}
 \caption{Overview of our developer profile data set.}
@@ -401,12 +407,14 @@ Average number of distinct IT entities / developer		& $57.4$\\
 
 
 \paragraph{Matching developer and job profiles}
-Finally, we consider the 
+
+Finally we briefly discuss the results of ranking all developers for a single 
 
 
 \section{Related Work}
 
 \section{Conclusions}
+
 
 \bibliographystyle{IEEEtran}
 \bibliography{dev-profiles}

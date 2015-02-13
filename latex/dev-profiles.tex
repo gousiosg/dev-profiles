@@ -271,40 +271,48 @@ developer's GitHub data with concepts from the same ontology (to allow a simple
 matching strategy) is more challenging. While programming language
 identification can largely be considered a solved problem, more fine-grained
 information such as the libraries used by a particular project often require
-language-specific solutions (e.g. Maven projects requires the parsing of pom
-files, .....). Furthermore, identifying how well a developer has internalized
-particular concepts (e.g. WebSocket programming, the TCP protocol, Bloom
-filters) requires a deep parsing and semantic tagging of the developer's source
-code contributions.  We conducted a preliminary study (described later) that
-suggests that a project's README can be utilized as a reasonable approximation
-of a project's content. Since such READMEs are usually in natural language form,
-we are able to use exactly the same process as for the job advertisements, only
-instead of extracting the concepts of a single piece of text, we process all
-README files contained in all projects the developer is \emph{associated} with.
-Here, association can either mean a project the developer created, forked or
-watches.
+language-specific solutions (e.g. Maven projects requires the parsing of
+\textsf{pom.xml} files). Furthermore, identifying the degree of familiarity a
+developer has with particular concepts (e.g. WebSocket programming, the TCP
+protocol, Bloom filters) requires deep parsing and semantic tagging of the
+developer's source code contributions; parsing at scale requires vast computing
+resources while concept extraction from source code is neither precise nor ~\cite{Kuhn07}.
 
-We turn to the vector space model as algebraic formulation of the concepts found
-in the job advertisement as well as the GitHub developer data:
-$\textit{job}_i=(w_{1,i}, w_{2,i}, ..., w_{n,i})$ and $\textit{dev}_j=(w_{1,j},
+We advocate that README (and in general, documentation) files in repositories in
+the developer's profile are a good proxy for the developer's familiarity with
+certain programming concepts, languages and toolkits. A typical README file
+contains information about what the software can do, description of technologies
+used in it, steps on how to recreate development environments and in general a
+wealth of information that the developers should be familiar with they own a
+repository. Since such READMEs are in natural language form, we can use exactly
+the same process as for the job advertisements, only instead of extracting the
+concepts of a single piece of text, we process all README files contained in all
+projects the developer is \emph{associated} with.  Here, association can either
+mean a repository the developer created or forked.
+
+\subsection{Concept weighting}
+
+The extracted concepts from job descriptions and GitHub profiles are converted
+to vectors: $\textit{job}_i=(w_{1,i}, w_{2,i}, ..., w_{n,i})$ and $\textit{dev}_j=(w_{1,j},
 w_{2,j}, ..., w_{n,j})$. Each dimension corresponds to one DBPedia concept and
 if a concept $c_s$ is found in the job advertisement (or developer profile), the
 corresponding weight $w_{s}$ is set to a value above zero. Since these vectors
 are extremely sparse, we also investigate the use of random walks on the DBPedia
 graph to ``switch on'' related concepts that are not explicitly mentioned in the
-advertisement or developer profile. How to exactly set the weights is the task
-of the concept weighting component discussed next.
-
-\subsection{Concept weighting}
+advertisement or developer profile.
+%How to exactly set the weights is the task
+%of the concept weighting component discussed next.
 
 Not all concepts extracted from an advertisement or developer profile are
-equally important. We use the well-known TF.IDF weighting scheme to determine
-non-binary concept weights (benefitting concepts which occur rarely across the
-entire corpus of documents, but often within particular documents); these
-weights are computed separately for the corpus of job advertisements and the
-corpus of developer profiles. Additionally, we enrich the concept vectors by
+equally important. We use the well-known TF.IDF \claudia{ref? Also, one sentence
+on how TF.IDF works for weighting} weighting scheme
+to determine non-binary concept weights (benefiting concepts which occur rarely
+across the entire corpus of documents, but often within particular documents);
+these weights are computed separately for the corpus of job advertisements and
+the corpus of developer profiles. Additionally, we enrich the concept vectors by
 adding for each found concepts up to $t$ semantically related concepts based on
-a particular relatedness measure.
+a particular relatedness measure \claudia{is this through the ``random walks''?
+I do not understand, please explain a bit more}.
 
 \subsection{Concept matching}
 

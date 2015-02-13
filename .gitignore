@@ -1,6 +1,10 @@
 ## Folders specific to Claudia's part of the project
 scripts
 
+#vi backups
+*.swp
+build
+
 ## Core latex/pdflatex auxiliary files:
 *.aux
 *.lof

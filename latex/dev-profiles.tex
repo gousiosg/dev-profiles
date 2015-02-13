@@ -64,7 +64,15 @@ Email: g.gousios@cs.ru.nl}
 \maketitle
 
 \begin{abstract}
-GitHub is a social coding platform that enables developers to efficiently work on projects, connect with other developers, collaborate and generally ``be seen'' by the community. This visibility also extends to prospective employers and HR personnel who may use GitHub to learn more about a developer's skills and interests. We propose a pipeline that automatizes this process and automatically suggests matching job advertisements to developers, based on signals extracting from their activities on GitHub.
+
+GitHub is a social coding platform that enables developers to efficiently work
+on projects, connect with other developers, collaborate and generally ``be
+seen'' by the community. This visibility also extends to prospective employers
+and HR personnel who may use GitHub to learn more about a developer's skills and
+interests. We propose a pipeline that automatizes this process and automatically
+suggests matching job advertisements to developers, based on signals extracting
+from their activities on GitHub.
+
 \end{abstract}
 
 
@@ -73,83 +81,229 @@ GitHub is a social coding platform that enables developers to efficiently work o
 %Not the most natural position of this figure, but otherwise (at least atm) LaTeX is not very willing to render the figure at a sensible place in the paper
 \begin{figure*}[!htb]
 \centering
-\includegraphics[scale=0.35]{images/pipeline.png}
+\includegraphics[scale=0.35]{../figs/pipeline.png}
 \caption{Overview of our pipeline}
 \label{fig:pipeline}
 \end{figure*}
 
-Today, social coding platforms have become an important tool for developers to showcase their work and become visible in the developer community. GitHub\footnote{\url{https://github.com/}} in particular has become an established way for developers to create a portfolio of their work to be considered during the hiring process by potential employers~\cite{dabbish2012social}. In order to find potential employers, developers search for job openings in various online job portals and compare their desires, experiences and activities with the described position. This is a cumbersome process as many job advertisements are lengthy, mentioning a plethora of programming languages, libraries and techniques that the perfect candidate should be familiar with.  Moreover, each of these items is usually conditioned on the number of years of experience or the level of expertise and may fall into the ``required'' or ``preferred'' skill category. Over the years, job advertisements have asked for a larger number of skills from prospective employees. This has led to a situation where a developer matching half of the described requirements may actually be a very well qualified candidate for the advertised position. In such cases having insights into how well other potential candidates fit the position may help the developer to judge whether to apply or not. Another complicating factor is the fact that job advertisements' writing style may be influenced by the numerous people involved in the creation of a job profile (managers, developers, HR personnel, etc.). Here a ``semantic gap'' may exist between search terms a developer is using to find suitable advertisements in job portals and the terms that actually appear in an advertisement. 
+Today, social coding platforms have become an important tool for developers to
+showcase their work and become visible in the developer community.
+GitHub\footnote{\url{https://github.com/}} in particular has become an
+established way for developers to create a portfolio of their work to be
+considered during the hiring process by potential
+employers~\cite{dabbish2012social}. In order to find potential employers,
+developers search for job openings in various online job portals and compare
+their desires, experiences and activities with the described position. This is a
+cumbersome process as many job advertisements are lengthy, mentioning a plethora
+of programming languages, libraries and techniques that the perfect candidate
+should be familiar with.  Moreover, each of these items is usually conditioned
+on the number of years of experience or the level of expertise and may fall into
+the ``required'' or ``preferred'' skill category. Over the years, job
+advertisements have asked for a larger number of skills from prospective
+employees. This has led to a situation where a developer matching half of the
+described requirements may actually be a very well qualified candidate for the
+advertised position. In such cases having insights into how well other potential
+candidates fit the position may help the developer to judge whether to apply or
+not. Another complicating factor is the fact that job advertisements' writing
+style may be influenced by the numerous people involved in the creation of a job
+profile (managers, developers, HR personnel, etc.). Here a ``semantic gap'' may
+exist between search terms a developer is using to find suitable advertisements
+in job portals and the terms that actually appear in an advertisement.
 
-Similarly, judging the qualification of an applicant based on his or her GitHub profile is equally challenging~\cite{Singer:2013:MAS:2441776.2441791}. GitHub provides several user-based summary statistics such as \emph{Contributions in the last year}, \emph{Number of forked projects}, \emph{Number of followers}, however, the usefulness of this information is very limited, as it does not offer immediate insights into the developer's programming abilities, the particular languages the developer is regularly using or the type of development toolchain the developer is using. 
-Marlow et al.~\cite{Marlow:2013:ATS:2441776.2441794} investigated how more detailed publicly accessible signals about a developer's activites on GitHub are used by employers in the recruitment process. In an interview-based study with several IT employers (active in the open-source community) they identified four main insights that employers can \emph{reliably} gain from a study of developer GitHub profiles: (1) Shared open source values, (2) Community acceptance of work \& contribution quality, (3) Project management skills, and (4) Passion for coding. Though again, the limiting factor in this setup is the time required to manually inspect each developer's profile.
+Similarly, judging the qualification of an applicant based on his or her GitHub
+profile is equally challenging~\cite{Singer:2013:MAS:2441776.2441791}. GitHub
+provides several user-based summary statistics such as \emph{Contributions in
+the last year}, \emph{Number of forked projects}, \emph{Number of followers},
+however, the usefulness of this information is very limited, as it does not
+offer immediate insights into the developer's programming abilities, the
+particular languages the developer is regularly using or the type of development
+toolchain the developer is using.  Marlow et
+al.~\cite{Marlow:2013:ATS:2441776.2441794} investigated how more detailed
+publicly accessible signals about a developer's activites on GitHub are used by
+employers in the recruitment process. In an interview-based study with several
+IT employers (active in the open-source community) they identified four main
+insights that employers can \emph{reliably} gain from a study of developer
+GitHub profiles: (1) Shared open source values, (2) Community acceptance of work
+\& contribution quality, (3) Project management skills, and (4) Passion for
+coding. Though again, the limiting factor in this setup is the time required to
+manually inspect each developer's profile.
 
-Business-oriented social networks such as LinkedIn\footnote{\url{https://www.linkedin.com/}} are using recommender engines to \emph{push} job advertisements to its users (in addition to the traditional \emph{pull}-based model where users are actively searching among the available advertisements). Recommender algorithms determine the \emph{similarity} between pairs of user and advertisement profiles and recommend the job to the user if the similarity is high. While this process moves the burden of determining the degree of matching away from the user, it is limited in its abilities due to the lack of detailed user profile data as statements such as ``Experienced Java developer'' or ``Embedded Software Engineer'' contain relatively little information.
+Business-oriented social networks such as
+LinkedIn\footnote{\url{https://www.linkedin.com/}} are using recommender engines
+to \emph{push} job advertisements to its users (in addition to the traditional
+\emph{pull}-based model where users are actively searching among the available
+advertisements). Recommender algorithms determine the \emph{similarity} between
+pairs of user and advertisement profiles and recommend the job to the user if
+the similarity is high. While this process moves the burden of determining the
+degree of matching away from the user, it is limited in its abilities due to the
+lack of detailed user profile data as statements such as ``Experienced Java
+developer'' or ``Embedded Software Engineer'' contain relatively little
+information.
 
-We conclude that considering the vast amounts of job advertisements in the IT sector (as well as the large number of developers), finding a job advertisement that is a good match with one's own abilities and desires is currently an inefficient process and likewise, determining how well an applicant from a group of applicants matches the position based on available GitHub user data is cumbersome and time-consuming. At the same time though, GitHub user data provides detailed insights that are not possible to be gained from other social Web sources.
+We conclude that considering the vast amounts of job advertisements in the IT
+sector (as well as the large number of developers), finding a job advertisement
+that is a good match with one's own abilities and desires is currently an
+inefficient process and likewise, determining how well an applicant from a group
+of applicants matches the position based on available GitHub user data is
+cumbersome and time-consuming. At the same time though, GitHub user data
+provides detailed insights that are not possible to be gained from other social
+Web sources.
 
-In this paper we propose a pipeline that \emph{automatically} mines GitHub user profiles and job advertisements for relevant information. We employ an approach that ``translates'' both the developer profile and the advertisement into the Linked Open Data (LOD)~\cite{bizer2009linked} space, where we can exploit the background information available in the LOD cloud to bridge the semantic gap mentioned earlier. Additionally, this setup allows us to (partially) rely on well-tested algorithms and toolkits and it provides a natural mechanism to determine the similarity between a natural language job advertisement and a developer's GitHub profile. 
+In this paper we propose a pipeline that \emph{automatically} mines GitHub user
+profiles and job advertisements for relevant information. We employ an approach
+that ``translates'' both the developer profile and the advertisement into the
+Linked Open Data (LOD)~\cite{bizer2009linked} space, where we can exploit the
+background information available in the LOD cloud to bridge the semantic gap
+mentioned earlier. Additionally, this setup allows us to (partially) rely on
+well-tested algorithms and toolkits and it provides a natural mechanism to
+determine the similarity between a natural language job advertisement and a
+developer's GitHub profile.
 
-In the following section we describe our proof-of-concept and provide an overview of the challenges that need to be overcome.
+In the following section we describe our proof-of-concept and provide an
+overview of the challenges that need to be overcome.
 
 
 \section{Approach}
 
-The general overview of our pipeline is shown in Figure~\ref{fig:pipeline} with the three main components being:
+The general overview of our pipeline is shown in Figure~\ref{fig:pipeline} with
+the three main components being:
+
 \begin{itemize}
-	\item \textbf{Extraction} of concepts from job advertisements and social coding user data
-	\item \textbf{Weighting} of concepts in such a way that more important concepts receive higher weights
-	\item \textbf{Matching} of the two (job and coding profile-based) concept vectors
+
+  \item \textbf{Extraction} of concepts from job advertisements and social
+    coding user data
+
+  \item \textbf{Weighting} of concepts in such a way that more important
+    concepts receive higher weights
+
+  \item \textbf{Matching} of the two (job and coding profile-based) concept
+    vectors
+
 \end{itemize}
 
 \subsection{Concept extraction}
-On the left-hand side in Figure~\ref{fig:pipeline}, we take as input a job advertisement in natural language text and extract the entities (or concepts) that appear in it. \emph{Named entity recognition} (that is, determining which word or phrase refers to some entity) in combination with \emph{named entity disambiguation} (that is determining to which concrete entity a particular word/phrase refers to) have been shown to be powerful tools to turn natural language text into a structured representation that machines can reason about. 
+
+On the left-hand side in Figure~\ref{fig:pipeline}, we take as input a job
+advertisement in natural language text and extract the entities (or concepts)
+that appear in it. \emph{Named entity recognition} (that is, determining which
+word or phrase refers to some entity) in combination with \emph{named entity
+disambiguation} (that is determining to which concrete entity a particular
+word/phrase refers to) have been shown to be powerful tools to turn natural
+language text into a structured representation that machines can reason about.
 
 %not the right place, but latex is pretty unwilling to render where I want this figure to be rendered
 \begin{figure*}[!htb]
 \centering
-\includegraphics[scale=0.4]{images/dbpedia-example-graph.png}
+\includegraphics[scale=0.4]{../figs/dbpedia-example-graph.png}
 \caption{An excerpt of DBPedia's graph structure. Each node is a concept, the properties between two concepts are captured in the form of a labelled edge.}
 \label{fig:dbpedia-example}
 \end{figure*}
 
 
-As a concrete example, consider the following excerpt from one of the job advertisements in our data set and its corresponding automatically derived Named Entity annotations. Shown in bold are all phrases that were recognized as referring to entities (or concepts). The annotations relevant to our scenario are shown in blue, while non-relevant entities are shown in red. 
-\vspace{1cm} %push the annotated text to the next column
+As a concrete example, consider the following excerpt from one of the job
+advertisements in our data set and its corresponding automatically derived Named
+Entity annotations. Shown in bold are all phrases that were recognized as
+referring to entities (or concepts). The annotations relevant to our scenario
+are shown in blue, while non-relevant entities are shown in red.  \vspace{1cm}
+%push the annotated text to the next column
 
 {\small
-\noindent The \textbf{successful} \annotateG{dbr/Successful\_(song)}\\ \textbf{candidates} \annotateG{dbr/Candidate} \\
+
+\noindent The \textbf{successful} \annotateG{dbr/Successful\_(song)}\\
+\textbf{candidates} \annotateG{dbr/Candidate} \\
 will have \textbf{experience} \annotateG{dbr/Experience}\\
 of \textbf{OOP} \annotate{dbr/Object-oriented\_programming}\\
-  in at least one of \textbf{PHP} \annotate{dbr/PHP}\\ 
-  (or another comparable,\\
-  dynamic language), \annotate{dbr/Dynamic\_programming\_language}\\ 
-  \textbf{Java} \annotate{dbr/Java\_(programming\_language)}\\
-  (ideally with \textbf{GWT}) \annotate{dbr/Google\_Web\_Toolkit}\\
-  or \textbf{C++} \annotate{dbr/C++}\\
-  (ideally with \textbf{Win32}). \annotate{Windows\_API}\\
+in at least one of \textbf{PHP} \annotate{dbr/PHP}\\
+(or another comparable,\\
+dynamic language), \annotate{dbr/Dynamic\_programming\_language}\\
+\textbf{Java} \annotate{dbr/Java\_(programming\_language)}\\
+(ideally with \textbf{GWT}) \annotate{dbr/Google\_Web\_Toolkit}\\
+or \textbf{C++} \annotate{dbr/C++}\\
+(ideally with \textbf{Win32}). \annotate{Windows\_API}\\
 They will also be well versed in\\
 \textbf{Test Driven Development} \annotate{dbr/Test-driven\_development}\\
-and advanced practices of\\ 
-{\footnotesize\textbf{Object Oriented Programming}} \annotate{dbr/Object-oriented\_programming} such as Design Patterns and \textbf{Refactoring}.  \annotate{dbr/Martin\_Fowler} 
-}
-\vspace{0.5cm}\\
-We annotated the above text with DBPedia Spotlight\footnote{\url{http://dbpedia-spotlight.github.io/}}, one of the most commonly used open-source annotation toolkits for natural language text. The phrases (the so-called \emph{surface form} of an entity) are not simply matched against a list of entity names, instead they are disambiguated based on the context a word or phrase appears in --- for instance, ``Java'' is recognized as the programming language entity (instead of the island, the coffee type or another one of the more than 30 different entities that have the surface form ``Java''). Each entity is uniquely identified through its URI as a particular Linked Open Data concept which in the case of DBPedia Spotlight is prefixed by \texttt{http://dbpedia.org/resource/} (for brevity, we replaced this prefix with \texttt{dbr} above). 
-Concepts are linked to each other through different types of properties, thus forming a densely connected graph structure. The large-scale DBpedia ontology is automatically derived from Wikipedia and based on the English Wikipedia edition, currently contains more than 4.5 million elements (``things'') and nearly 600 million links between them. Figure~\ref{fig:dbpedia-example} contains a small excerpt of this graph -- even though C++ and the Java programming language are not directly linked, we can determine some degree of relatedness by a walk across the graph (similarly, we can observe a lower relatedness degree between C++ and the GWT, as the distance between the two concepts is larger). Such graph walks allow us to determine the relatedness between virtually any two concepts.
-Since in our particular use case we are mostly interested in concepts related to information technology, we restrict the annotations to concepts that have the type \emph{computer} or \emph{internet}. Wikipedia (and thus DBPedia) contains entries covering most if not all programming languages, many important programming frameworks and libraries as well as many computer science concepts. We thus consider it a suitable ontology to use for our specific use case.
+and advanced practices of\\
+{\footnotesize\textbf{Object Oriented Programming}} \annotate{dbr/Object-oriented\_programming} \\
+such as Design Patterns and \textbf{Refactoring}. \annotateG{dbr/Martin\_Fowler}}\\
 
-While the annotation of the job advertisements is straight-forward, annotating a developer's GitHub data with concepts from the same ontology (to allow a simple matching strategy) is more challenging. While programming language identification can largely be considered a solved problem, more fine-grained information such as the libraries used by a particular project often require language-specific solutions (e.g. Maven projects requires the parsing of pom files, .....). Furthermore, identifying how well a developer has internalized particular concepts (e.g. WebSocket programming, the TCP protocol, Bloom filters) requires a deep parsing and semantic tagging of the developer's source code contributions.
-We conducted a preliminary study (described later) that suggests that a project's README can be utilized as a reasonable approximation of a project's content. Since such READMEs are usually in natural language form, we are able to use exactly the same process as for the job advertisements, only instead of extracting the concepts of a single piece of text, we process all README files contained in all projects the developer is \emph{associated} with. Here, association can either mean a project the developer created, forked or watches.
 
-We turn to the vector space model as algebraic formulation of the concepts found in the job advertisement as well as the GitHub developer data: $\textit{job}_i=(w_{1,i}, w_{2,i}, ..., w_{n,i})$ and $\textit{dev}_j=(w_{1,j}, w_{2,j}, ..., w_{n,j})$. Each dimension corresponds to one DBPedia concept and if a concept $c_s$ is found in the job advertisement (or developer profile), the corresponding weight $w_{s}$ is set to a value above zero. Since these vectors are extremely sparse, we also investigate the use of random walks on the DBPedia graph to ``switch on'' related concepts that are not explicitly mentioned in the advertisement or developer profile. How to exactly set the weights is the task of the concept weighting component discussed next.
+We annotated the above text with DBPedia
+Spotlight\footnote{\url{http://dbpedia-spotlight.github.io/}}, one of the most
+commonly used open-source annotation toolkits for natural language text. The
+phrases (the so-called \emph{surface form} of an entity) are not simply matched
+against a list of entity names, instead they are disambiguated based on the
+context a word or phrase appears in --- for instance, ``Java'' is recognized as
+the programming language entity (instead of the island, the coffee type or
+another one of the more than 30 different entities that have the surface form
+``Java''). Each entity is uniquely identified through its URI as a particular
+Linked Open Data concept which in the case of DBPedia Spotlight is prefixed by
+\texttt{http://dbpedia.org/resource/} (for brevity, we replaced this prefix with
+\texttt{dbr} above).  Concepts are linked to each other through different types
+of properties, thus forming a densely connected graph structure. The large-scale
+DBpedia ontology is automatically derived from Wikipedia and based on the
+English Wikipedia edition, currently contains more than 4.5 million elements
+(``things'') and nearly 600 million links between them.
+Figure~\ref{fig:dbpedia-example} contains a small excerpt of this graph -- even
+though C++ and the Java programming language are not directly linked, we can
+determine some degree of relatedness by a walk across the graph (similarly, we
+can observe a lower relatedness degree between C++ and the GWT, as the distance
+between the two concepts is larger). Such graph walks allow us to determine the
+relatedness between virtually any two concepts.  Since in our particular use
+case we are mostly interested in concepts related to information technology, we
+restrict the annotations to concepts that have the type \emph{computer} or
+\emph{internet}. Wikipedia (and thus DBPedia) contains entries covering most if
+not all programming languages, many important programming frameworks and
+libraries as well as many computer science concepts. We thus consider it a
+suitable ontology to use for our specific use case.
+
+While the annotation of the job advertisements is straight-forward, annotating a
+developer's GitHub data with concepts from the same ontology (to allow a simple
+matching strategy) is more challenging. While programming language
+identification can largely be considered a solved problem, more fine-grained
+information such as the libraries used by a particular project often require
+language-specific solutions (e.g. Maven projects requires the parsing of pom
+files, .....). Furthermore, identifying how well a developer has internalized
+particular concepts (e.g. WebSocket programming, the TCP protocol, Bloom
+filters) requires a deep parsing and semantic tagging of the developer's source
+code contributions.  We conducted a preliminary study (described later) that
+suggests that a project's README can be utilized as a reasonable approximation
+of a project's content. Since such READMEs are usually in natural language form,
+we are able to use exactly the same process as for the job advertisements, only
+instead of extracting the concepts of a single piece of text, we process all
+README files contained in all projects the developer is \emph{associated} with.
+Here, association can either mean a project the developer created, forked or
+watches.
+
+We turn to the vector space model as algebraic formulation of the concepts found
+in the job advertisement as well as the GitHub developer data:
+$\textit{job}_i=(w_{1,i}, w_{2,i}, ..., w_{n,i})$ and $\textit{dev}_j=(w_{1,j},
+w_{2,j}, ..., w_{n,j})$. Each dimension corresponds to one DBPedia concept and
+if a concept $c_s$ is found in the job advertisement (or developer profile), the
+corresponding weight $w_{s}$ is set to a value above zero. Since these vectors
+are extremely sparse, we also investigate the use of random walks on the DBPedia
+graph to ``switch on'' related concepts that are not explicitly mentioned in the
+advertisement or developer profile. How to exactly set the weights is the task
+of the concept weighting component discussed next.
 
 \subsection{Concept weighting}
 
-Not all concepts extracted from an advertisement or developer profile are equally important. We use the well-known TF.IDF weighting scheme to determine non-binary concept weights (benefitting concepts which occur rarely across the entire corpus of documents, but often within particular documents); these weights are computed separately for the corpus of job advertisements and the corpus of developer profiles. Additionally, we enrich the concept vectors by adding for each found concepts up to $t$ semantically related concepts based on a particular relatedness measure.
+Not all concepts extracted from an advertisement or developer profile are
+equally important. We use the well-known TF.IDF weighting scheme to determine
+non-binary concept weights (benefitting concepts which occur rarely across the
+entire corpus of documents, but often within particular documents); these
+weights are computed separately for the corpus of job advertisements and the
+corpus of developer profiles. Additionally, we enrich the concept vectors by
+adding for each found concepts up to $t$ semantically related concepts based on
+a particular relatedness measure.
 
 \subsection{Concept matching}
 
-The vector space provides a natural mechanism to determine the similarity between the devised job and developer profile vectors, namely the cosine of the angle between the two vectors (the so-called cosine similarity), which is bounded to a value in $[0,1]$ where a larger score indicates higher similarity. 
-We can now for each job advertisement rank all developer profiles as well as the other way round.
+The vector space provides a natural mechanism to determine the similarity
+between the devised job and developer profile vectors, namely the cosine of the
+angle between the two vectors (the so-called cosine similarity), which is
+bounded to a value in $[0,1]$ where a larger score indicates higher similarity.
+We can now for each job advertisement rank all developer profiles as well as the
+other way round.
 
 \section{Data}
 
@@ -159,7 +313,11 @@ We crawled XXX job advertisement in early 2015 containing the phrase \emph{Softw
 
 \subsection{Developer profiles}
 
-Mining developer profiles from GitHub's publicly available data sources incurs the challenge of how to derive features from this raw data that are useful in the context of matching job advertisements to developers. Prior work has considered a number of high-level concepts that recruiters consider when looking for developers, such as ....
+Mining developer profiles from GitHub's publicly available data sources incurs
+the challenge of how to derive features from this raw data that are useful in
+the context of matching job advertisements to developers. Prior work has
+considered a number of high-level concepts that recruiters consider when looking
+for developers, such as ....
 
 \subsection{Job profiles}
 

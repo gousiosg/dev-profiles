@@ -319,16 +319,21 @@ other way round.
 \section{Experiments}
 
 \subsection{Job advertisements} 
-We crawled job advertisements posted in early 2015 from the UK job portal  Indeed\footnote{\url{http://www.indeed.co.uk}}. Each search on Indeed returns up to $1,000$ search results (i.e. advertisements); we conducted five searches using the following search phrases: $\{\textit{software developer}, \textit{software architect}, \textit{software engineer},$ $\emph{computer science}, \emph{web developer}\}$ and thus retrieved $5,000$ advertisements in total. Of those, $1,1121$ advertisements were posted directly on the Indeed platform (instead of referring to an externally placed advertisment); we annotated them with DBPedica concepts as discussed before. The main results are shown in Table~\ref{tab:jobadverts}. Important for our work is the fact that on average ten IT concepts are mentioned, though it should be noted that these also include general concepts such as \emph{Application\_software} as shown in Table~\ref{tab:top10} where the ten most popular IT concepts across all job advertisements are listed.
+We crawled job advertisements posted in early 2015 from the UK job portal  Indeed\footnote{\url{http://www.indeed.co.uk}}. Each search on Indeed returns up to $1,000$ search results (i.e. advertisements); we conducted five searches using the following search phrases: $\{\textit{software developer}, \textit{software architect}, \textit{software engineer},$ $\emph{computer science}, \emph{web developer}\}$ and thus retrieved $5,000$ advertisements in total. Of those more than $1,000$ advertisements were posted directly on the Indeed platform (instead of referring to an externally placed advertisment); we annotated them with DBPedica concepts as discussed before. The main results are shown in Table~\ref{tab:jobadverts}. Important for our work is the fact that on average ten IT concepts are mentioned, though it should be noted that these also include general concepts such as \emph{Application\_software} as shown in Table~\ref{tab:top10} where the ten most popular IT concepts across all job advertisements are listed.
 
 \begin{table}
 \centering
 \begin{tabular}{lr}
 \toprule
-Number of job adverts			& $1,121$\\
-Average number of words / advert 		& $287.4$\\
-Average number of  entities / advert	& $59.6$\\
-Average number of IT entities / advert& $9.9$\\
+Number of job adverts								& $1,337$\\
+Average number of words / advert 			& $284.7$\\
+\midrule
+Aveage number of entities / advert			& $84.1$\\
+Average number of  distinct entities / advert	& $59.0$\\
+\midrule
+Average number of IT entities / advert	& $14.4$\\
+Average number of distinct IT entities / advert& $9.7$\\
+
 \bottomrule
 \end{tabular}
 \caption{Overview of our job advertisement data set.}
@@ -337,20 +342,21 @@ Average number of IT entities / advert& $9.9$\\
 
 \begin{table}
 \centering
+\footnotesize
 \begin{tabular}{ll}
 \toprule
 \textbf{Job advertisements}	& \textbf{Developer profiles}\\
 \midrule
-dbr/Computer\_software (43.3\%) 			& \\
-dbr/Application\_software (40.4\%)			& \\
-dbr/Cascading\_Style\_Sheets (38.9\%)	& \\
-dbr/Business (37.6\%)								& \\
-dbr/JavaScript (36.5\%)							& \\
-dbr/HTML (24.8\%)									& \\
-dbr/Debian (20.5\%)								& \\
-dbr/PHP (20.0\%)										& \\
-dbr/Computing\_platform (1§9.8\%)		& \\
-dbr/HTML5 (17.4\%)								& \\
+dbr/Computer\_software (41.8\%) 			& Hypertext\_Transfer\_Protocol (41.7\%) \\
+dbr/Application\_software (39.6\%)			& JavaScript (23.05\%) \\
+dbr/Cascading\_Style\_Sheets (37.8\%)	& HTML (21.4\%) \\
+dbr/Business (36.4\%)								& Portable\_Network\_Graphics (19.0\%)\\
+dbr/JavaScript (34.5\%)							& Cascading\_Style\_Sheets (13.2\%)\\
+dbr/HTML (23.0\%)									& Application\_software (12.8\%) \\
+dbr/Debian (19.2\%)								& MIT\_License (11.8\%) \\
+dbr/PHP (18.9\%)										& Scripting\_language (10.2\%) \\
+dbr/Computing\_platform (18.4\%)		& Git\_(software) (10.2\%) \\
+dbr/.NET\_Framework (18.0\%)				& Web\_browser (10.0\%)\\
 \bottomrule
 \end{tabular}
 \caption{Overview of the ten most often occurring IT concepts in our job advertisement and developer profile data sets. Shown in brackets is the percentage of documents (job advertisements / developer profiles) that contain the concept at least once.}
@@ -359,7 +365,37 @@ dbr/HTML5 (17.4\%)								& \\
 
 \subsection{Developer profiles}
 
-To 
+We extracted the $1,000$ most active GitHub developers from the GHTorrent\footnote{\url{https://ghtorrent.org/}} dataset. 863 of those users forked or created at least one project that contains a non-empty REAdME file, the remainder are on first inspection GitHub bots and scripts. Each README is associated with one project. The main statistics of our developer data set are shown in Table~\ref{tab:developers}. 
+
+
+\begin{table}[htb]
+\centering
+\begin{tabular}{lr}
+\toprule
+Number of developers									& $663$\\
+\midrule
+Average number of project README files / developer	& $32.3$\\
+Average number \emph{forked} project README files / developer	& $16.5$\\
+Average number \emph{created} projet README files / developer & $15.7$\\
+\midrule
+Average number of words / README file		& $384.5$\\
+Average number of non-code words / README file 	& $320.2$\\
+\midrule
+Average number of entities / README file 					& $52.3$\\
+Average number of distinct entities / README file 					& $17.23$\\
+\midrule
+Average number of IT entities / README file				& $18.0$\\
+Average number of distinct IT entities / README file				& $6.0$\\
+\midrule
+Average number of entities /developer						& $52.3$\\
+Average number of distinct entities / developer					& $17.23$\\
+Average number of IT entities / developer			& $18.0$\\
+Average number of distinct IT entities / developer				& $6.0$\\
+\bottomrule
+\end{tabular}
+\caption{Overview of our developer profile data set.}
+\label{tab:developers}
+\end{table}
 
 
 \subsection{Matching developer and job profiles}

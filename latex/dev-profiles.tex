@@ -83,7 +83,7 @@ from their activities on GitHub.
 %Not the most natural position of this figure, but otherwise (at least atm) LaTeX is not very willing to render the figure at a sensible place in the paper
 \begin{figure*}[!htb]
 \centering
-\includegraphics[scale=0.35]{../figs/pipeline.png}
+\includegraphics[scale=0.32]{../figs/pipeline.png}
 \caption{Overview of our pipeline}
 \label{fig:pipeline}
 \end{figure*}
@@ -193,7 +193,7 @@ that machines can reason about.
 %not the right place, but latex is pretty unwilling to render where I want this figure to be rendered
 \begin{figure*}[!htb]
 \centering
-\includegraphics[scale=0.4]{../figs/dbpedia-example-graph.png}
+\includegraphics[scale=0.3]{../figs/dbpedia-example-graph.png}
 \caption{An excerpt of DBPedia's graph structure. Each node is a concept, the properties between two concepts are captured in the form of a labelled edge.}
 \label{fig:dbpedia-example}
 \end{figure*}
@@ -289,13 +289,12 @@ to vectors: $\textit{job}_i=(w_{1,i}, w_{2,i}, ..., w_{n,i})$ and $\textit{dev}_
 w_{2,j}, ..., w_{n,j})$. Each dimension corresponds to one DBPedia concept and
 if a concept $c_s$ is found in the job advertisement (or developer profile), the
 corresponding weight $w_{s}$ is set to a value above zero. Since these vectors
-are extremely sparse, we also investigate the use of semantic relatedness measures on the DBPedia data to ``switch on'' related concepts that are not explicitly mentioned in the
+are extremely sparse, in the future we will also investigate the use of semantic relatedness measures on the DBPedia data to ``switch on'' related concepts that are not explicitly mentioned in the
 advertisement or developer profile.
 %How to exactly set the weights is the task
 %of the concept weighting component discussed next.
 
-Not all concepts extracted from an advertisement or developer profile are
-equally important. We use a basic concept weighting scheme commonly employed in information retrieval: TF.IDF~\cite{baeza1999modern} which gives a low weight to concepts that appear in many documents (as those are not very informative) while at the same time benefiting concepts which occur rarely across the entire corpus of documents, but often within particular documents. These weights are computed separately for the corpus of job advertisements and the corpus of developer profiles. 
+Not all concepts extracted from an advertisement or developer profile are equally important. We use a basic concept weighting scheme commonly employed in information retrieval: TF.IDF~\cite{baeza1999modern} which gives a low weight to concepts that appear in many documents (as those are not very informative) while at the same time benefiting concepts which occur rarely across the entire corpus of documents, but often within particular documents. These weights are computed separately for the corpus of job advertisements and the corpus of developer profiles. 
 
 %Additionally, we enrich the concept vectors by adding for each found concepts up to $t$ semantically related concepts based on a particular relatedness measure \claudia{is this through the ``random walks''? I do not understand, please explain a bit more}.
 
@@ -307,7 +306,7 @@ angle between the two vectors (the so-called cosine similarity), which is
 bounded to a value in $[0,1]$ where a larger score indicates higher similarity.
 We can now for each job advertisement rank all developer profiles according to the similarity as well the other way round.
 
-\section{Experiments}
+\section{Preliminary Results}
 
 \paragraph{Job advertisements} 
 We crawled job advertisements posted in early 2015 from the UK job portal  Indeed\footnote{\url{http://www.indeed.co.uk}}. Each search on Indeed returns up to $1,000$ search results (i.e. advertisements); we conducted five searches using the following search phrases: $\{\textit{software developer}, \textit{software architect}, \textit{software engineer},$ $\emph{computer science}, \emph{web developer}\}$ and thus retrieved $5,000$ advertisements in total. Of those more than $1,300$ advertisements were posted directly on the Indeed platform (instead of referring to an externally placed advertisment). We annotated them with DBPedica concepts as discussed before; the main results are shown in Table~\ref{tab:jobadverts}. Important for our work is the fact that on average ten IT concepts are mentioned in each advert. The ten most occurring concepts in this data set are shown in Table~\ref{tab:top10} (left column). 
@@ -358,9 +357,11 @@ Computing\_platform (18.4\%)		& GNU\_Project (29.2\%) \\
 \paragraph{Developer profiles}
 
 \begin{figure}
+\vspace{-0.1cm}
 \includegraphics[scale=0.3]{../figs/entities-jobs-vs-devs.png}
 \caption{Each marker represents one IT entities (851 in total) which represent the union of all concepts found in the job adverts and developer profile data sets. The scatter plot shows in how many developer profiles the entity appeared (at least once) vs. in how many job advertisements.}
 \label{fig:scatterEntities}
+\vspace{-0.5cm}
 \end{figure}
 
 We extracted the $1,000$ top committers from the GHTorrent~\cite{Gousi13} dataset. 863 of those users forked or created at least one project that contains a non-empty \texttt{REAdME.md} file, the remainder are either bots (63 users) or created/forked projects with only empty README.md files (70 users). Thus, overall for less than $10\%$ of human GitHub it is not possible to use README's as source of developer profile data. Each \texttt{README.md} is associated with one project. The main statistics of our developer data set are shown in Table~\ref{tab:developers}. Importantly on average for each developer we are able to extract $500$ IT entities across all the developer's README files. The $57$ distinct IT entities found on average per developer indicate the high level of detailed information we are able to extract. The right column of Table~\ref{tab:top10} shows the most often occurring IT entities across developers. In support of our envisioned application, we find substantial overlap between the entities extracted from job advertisements and the entities extracted from developer profiles as evident in Figure~\ref{fig:scatterEntities}; while some concepts appear either only among the developer profiles or among the job adverts, the majority of concepts appear at least once in both corpora. The linear correlation between the number of times a concept appears in developer profiles vs. job adverts is $r=0.49$ (fitted line in Figure~\ref{fig:scatterEntities}).
@@ -397,10 +398,9 @@ Total number of distinct IT entities found	& $764$\\
 \end{table}
 
 
-
 \paragraph{Matching developer and job profiles}
 
-Finally we briefly discuss the results of ranking all developers for a single 
+Lastly, for every pair of job advert and developer profile vector we computed their similarity. A manual investigation of the developer rankings produced for 25 adverts showed reasonable results though it also became clear that additional GitHub signals (number of lines of code, coding style and quality, etc.) are required as extensive README files do not always equate to extensive coding. Similarly, more fine-grained distinctions for forked and created projects are likely to aid the results.
 
 
 \section{Related Work}
@@ -430,13 +430,12 @@ setup is the time required to manually inspect each developer's profile.
 The availability of data from social coding sites enables the automated
 extraction of developer profiles for the purposes of matching them with job
 advertisements. We proposed a pipeline to do this matching automatically.  Our
-key insights are i) the approximation of the developers' actual programming
-knowledge through README files in their profile repositories ii) the use of a
+key insights are( i) the approximation of the developers' actual programming
+knowledge through README files in their profile repositories, and, (ii) the use of a
 large scale ontology to convert both job advertisements and developer profiles
 to vector objects featuring a common vocabulary. We obtained interesting
-results, such as\claudia{?}, which leads us to believe that our approach is a
-promising start. In the future, we plan to augment developer profiles through
-extracting fine-grained information from the source code and build files for
+insights such as the substantial overlap in covered concepts between adverts and README files and the abundance of IT concepts in the latter, which leads us to believe that our approach is a
+promising start. In the future, we plan to augment developer profiles through extracting fine-grained information from the source code and build files for
 their repositories.
 
 \bibliographystyle{IEEEtran}
